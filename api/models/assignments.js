@@ -1,11 +1,17 @@
 const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
-  content: {
+  title: {
     type: String,
-    min: 10
+    required: true
   },
-  emotion: String
+  link: {
+    type: String,
+    required: true
+  },
+  description: String,
+  grade: Number,
+  max_grade: Number
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 
 module.exports = schema

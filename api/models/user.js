@@ -1,17 +1,26 @@
 const mongoose = require('mongoose')
-const Post = require('./post')
+const Assignments = require('./assignments')
 
 const schema = mongoose.Schema({
-  name: String,
-  username: {
+  first_name: {
+    type: String,
+    required: true
+  },
+  last_name: String,
+  email: {
     type: String,
     required: true
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    min: 8
   },
-  posts: [Post]
+  admin: {
+    type: Boolean,
+    default: false
+  },
+  assignments: [Assignments]
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 
 module.exports = mongoose.model('User', schema)
