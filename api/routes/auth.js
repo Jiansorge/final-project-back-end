@@ -3,6 +3,10 @@ const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const { decodeToken, generateToken } = require('../lib/token')
 
+function emailIsValid (email) {
+  return /\S+@\S+\.\S+/.test(email)
+}
+
 router.get('/profile', async (req, res, next) => {
   try {
     const payload = decodeToken(req.token)
@@ -20,6 +24,7 @@ router.get('/profile', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   const { email, password } = req.body
+
   const user = await User.findOne({ email })
   if (user) {
     const valid = await bcrypt.compare(password, user.password)
@@ -38,10 +43,35 @@ router.post('/login', async (req, res, next) => {
 })
 
 router.post('/signup', async (req, res, next) => {
-  const { email, password } = req.body
+  const { first_name, last_name, email, password } = req.body
+  if (!email || !emailIsValid(email)) {
+    const error = new Error (`Valid email is required.`)
+    error.status = 401
+    next(error)
+  }
+  if (!password ) {
+    const error = new Error (`Password is required.`)
+    error.status = 401
+    next(error)
+  }
+  if (password.length < 8 ) {
+    const error = new Error (`Password must be at least 8 characters.`)
+    error.status = 401
+    next(error)
+  }
+  if (!first_name ) {
+    const error = new Error (`First name is required.`)
+    error.status = 401
+    next(error)
+  }
+  if (!last_name ) {
+    const error = new Error (`Last name is required.`)
+    error.status = 401
+    next(error)
+  }
   const rounds = 10
   const hashed = await bcrypt.hash(password, rounds)
-
+  
   const alreadyExists = await User.findOne({ email })
   if (alreadyExists) {
     const error = new Error(`Email '${email}' is already taken.`)
