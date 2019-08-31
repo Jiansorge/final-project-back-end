@@ -8,6 +8,11 @@ app.use(require('cors')({
   optionsSuccessStatus: 200
 }))
 
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://final-frontend.jiansorge.now.sh");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 // Database Connection
 require('./db/connection')()
 
